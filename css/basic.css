@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/*
+*我是css的标准注释
+*设置body内距
+*/
+* { margin: 0; padding: 0; }
+
+.demo { padding: 0; }
+.demo .demo2 { margin: 0; }
+.demo .demo3 { padding: 0; }
+.demo .demo3 .dem03 { width: 100px; }
+
+body { background: #000; }
+
+li { width: 200px; height: 200px; background: red; border: 1px solid red; }
+
+ul { border: 1px solid red; }
+
+/*# sourceMappingURL=basic.css.map */

@@ -1,0 +1,261 @@
+/* sass的变量必须是$开头，后面紧跟变量名，而变量值和变量名之间就需要使用冒号(:)分隔开（就像CSS属性设置一样），如果值后面加上!default则表示默认值。
+1.普通变量
+定义之后可以在全局范围内使用。 */
+//不合适
+$fontSize:12px;
+body{
+	font-size:$fontSize;
+}
+/* sass的默认变量仅需要在值后面加上!default即可。 */
+$baseLineHeight:        1.5 !default;
+body{
+    line-height: $baseLineHeight; 
+}
+/* sass的默认变量一般是用来设置默认值，然后根据需求来覆盖的，覆盖的方式也很简单，只需要在默认变量之前重新声明下变量即可 */
+$baseLineHeight:        2;
+$baseLineHeight:        1.5 !default;
+body{
+    line-height: $baseLineHeight; 
+}
+/* 可以看出现在编译后的line-height为2，而不是我们默认的1.5。默认变量的价值在进行组件化开发的时候会非常有用。 */
+/*2 特殊变量 */
+/*一般般我们定义的变量都为属性值，可直接使用，但是如果变量作为属性或在某些特殊情况下等则必须要以形式使用。*///#{$variables}
+$borderDirection:       top !default; 
+$baseFontSize:          12px !default;
+$baseLineHeight:        1.5 !default;
+
+//应用于class和属性
+.border-#{$borderDirection}{
+  border-#{$borderDirection}:1px solid #ccc;
+}
+//应用于复杂的属性值
+body{
+    font:#{$baseFontSize}/#{$baseLineHeight};
+}
+/*3多值变量  */
+/* 多值变量分为list类型和map类型，简单来说list类型有点像js中的数组，而map类型有点像js中的对象。
+list
+list数据可通过空格，逗号或小括号分隔多个值，可用nth($var,$index)取值。关于list数据操作还有很多其他函数如length($list)，join($list1,$list2,[$separator])，append($list,$value,[$separator])等，具体可参考sass Functions（搜索List Functions即可） */
+/* //一维数据
+$px: 5px 10px 20px 30px;
+
+//二维数据，相当于js中的二维数组
+$px: 5px 10px, 20px 30px;
+$px: (5px 10px) (20px 30px); */
+//sass style
+//-------------------------------
+$linkColor:         #08c #333 !default;//第一个值为默认值，第二个鼠标滑过值
+a{
+  color:nth($linkColor,1);
+
+  &:hover{
+    color:nth($linkColor,2);
+  }
+}
+/* map
+map数据以key和value成对出现，其中value又可以是list。格式为：$map: (key1: value1, key2: value2, key3: value3);。可通过map-get($map,$key)取值。关于map数据还有很多其他函数如map-merge($map1,$map2)，map-keys($map)，map-values($map)等， */
+
+//sass style
+//-------------------------------
+//语法：@each $var in
+/* 循环一个列表里面所有的值，然后去做点什么呗，那到底做点什么呢，这是个问题。你可以先想个三分钟试试，我们现在能用@each给css赋予什么魅力。 */
+$headings: (h1: 2em, h2: 1.5em, h3: 1.2em);
+@each $header, $size in $headings {
+  #{$header} {
+    font-size: $size;
+  }
+}
+@each $animal in puma, sea-slug, egret, salamander {
+  .#{$animal}-icon {
+    background-image: url('/images/#{$animal}.png');
+  }
+}
+$sprite: puma sea-slug egret salamander !default;
+
+%sprite-animal{
+    background: url('/images/animal.png') no-repeat;
+}
+@each $animal in $sprite {
+    .#{$animal}-icon {
+        @extend %sprite-animal;     
+        background-position:0 -(index($sprite,$animal)*30px);
+    }
+}
+/* 嵌套(Nesting) */
+/* 选择器嵌套 */
+//sass style
+//-------------------------------
+#top_nav{
+  line-height: 40px;
+  text-transform: capitalize;
+  background-color:#333;
+  li{
+    float:left;
+  }
+  a{
+    display: block;
+    padding: 0 10px;
+    color: #fff;
+
+    &:hover{
+      color:#ddd;
+    }
+  }
+}
+/* 属性嵌套 */
+.fakeshadow {
+  border: {
+    style: solid;
+    left: {
+      width: 4px;
+      color: #888;
+    }
+    right: {
+      width: 2px;
+      color: #ccc;
+    }
+  }
+}
+/* 当然这只是个属性嵌套的例子，如果实际这样使用，那估计得疯掉。 */
+/* @at-root
+sass3.3.0中新增的功能，用来跳出选择器嵌套的。默认所有的嵌套，继承所有上级选择器，但有了这个就可以跳出所有上级选择器。
+普通跳出嵌套
+ */
+ //sass style
+//-------------------------------
+//没有跳出
+.parent-1 {
+  color:#f00;
+  .child {
+    width:100px;
+  }
+}
+
+//单个选择器跳出
+.parent-2 {
+  color:#f00;
+  @at-root .child {
+    width:200px;
+  }
+}
+//多个选择器跳出
+.parent-3 {
+  background:#f00;
+  @at-root {
+    .child1 {
+      width:300px;
+    }
+    .child2 {
+      width:400px;
+    }
+  }
+}
+/* @at-root (without: ...)和@at-root (with: ...)
+默认@at-root只会跳出选择器嵌套，而不能跳出@media或@support，如果要跳出这两种，则需使用@at-root (without: media)，@at-root (without: support)。这个语法的关键词有四个：all（表示所有），rule（表示常规css），media（表示media），support（表示support，因为@support目前还无法广泛使用，所以在此不表）。我们默认的@at-root其实就是@at-root (without:rule)。 */
+//sass style
+//-------------------------------
+//跳出父级元素嵌套
+@media print {
+    .parent1{
+      color:#f00;
+      @at-root .child1 {
+        width:200px;
+      }
+    }
+}
+
+//跳出media嵌套，父级有效
+@media print {
+  .parent2{
+    color:#f00;
+
+    @at-root (without: media) {
+      .child2 {
+        width:200px;
+      } 
+    }
+  }
+}
+
+//跳出media和父级
+@media print {
+  .parent3{
+    color:#f00;
+
+    @at-root (without: all) {
+      .child3 {
+        width:200px;
+      } 
+    }
+  }
+}
+/* @at-root与&配合使用 */
+//sass style
+//-------------------------------
+.child{
+    @at-root .parent &{
+        color:#f00;
+    }
+}
+
+//css style
+//-------------------------------
+.parent .child {
+  color: #f00;
+}
+/* 应用于@keyframe */
+//sass style
+//-------------------------------
+/*.demo {
+    
+    animation: motion 3s infinite;
+
+    @at-root {
+        @keyframes motion {
+          transformZ: 360reg;
+        }
+    }
+}*/
+/* 函数 */
+/* sass定义了很多函数可供使用，当然你也可以自己定义函数，以@fuction开始。sass的官方函数链接为：sass fuction，实际项目中我们使用最多的应该是颜色函数，而颜色函数中又以lighten减淡和darken加深为最，其调用方法为lighten($color,$amount)和darken($color,$amount)，它们的第一个参数都是颜色值，第二个参数都是百分比。 */
+//sass style
+//-------------------------------                     
+$baseFontSize:      1px !default;
+$gray:              #ccc !default;        
+
+// pixels to rems 
+@function pxToRem($px) {
+  @return $px / $baseFontSize * 1rem;
+}
+
+body{
+  font-size:$baseFontSize;
+  color:lighten($gray,10%);
+}
+.test{
+  font-size:pxToRem(16px);
+  color:darken($gray,10%);
+}
+//sass style
+//-------------------------------                     
+$lte7: true;
+$type: monster;
+.ib{
+    display:inline-block;
+    @if $lte7 {
+        *display:inline;
+        *zoom:1;
+    }
+}
+p {
+  @if $type == ocean {
+    color: blue;
+  } @else if $type == matador {
+    color: red;
+  } @else if $type == monster {
+    color: green;
+  } @else {
+    color: black;
+  }
+}
+

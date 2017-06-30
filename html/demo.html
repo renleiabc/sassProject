@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Highcharts Example</title>
+    <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <style type="text/css">
+    $ {
+        demo.css
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        var json, txt, timeInterval,chart;
+        timeInterval = 1000;
+        Highcharts.setOptions({
+            global: {
+                timezoneOffset: -8 * 60
+            }
+        });
+        chart = new Highcharts.Chart( {
+            title: {
+                text: "图表",
+            },
+            chart: {
+                renderTo: "chart1",
+                type: 'spline',
+                animation: true,
+                events: {
+                    load: function() {
+                        // set up the updating of the chart each second
+                        var series = this.series,
+                            chart = this;
+                        setInterval(function() {
+                            var x = new Date().getTime(), // current time
+                                y = Math.random(),
+                                y1 = Math.random();
+                            // addPoint 第二个参数表示是否对图表进行重绘，当有多个参数是，需先关闭重绘，
+                            // 等操作完毕后再调 chart.redraw();
+                            series[0].addPoint([x, y], false, true);
+                            series[1].addPoint([x, y1], false, true);
+                            chart.redraw();
+                        }, timeInterval);
+                    }
+                }
+            },
+            xAxis: {
+                type: 'datetime',
+                tickInterval: timeInterval //当前的时间刻度是一秒
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            plotOptions: {
+                series: {
+                    //showCheckbox: true
+                },
+                line: {
+                    events: {
+                        checkboxClick: function(event) {
+                            if (event.checked) {
+                                console.log(event);
+                                this.show();
+                            } else {
+                                console.log(event);
+                                this.hide();
+                            }
+                        },
+                        legendItemClick: function(event) { //return false 即可禁用LegendIteml，防止通过点击item显示隐藏系列
+                            return false;
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                align: 'right', //水平方向位置
+                verticalAlign: 'top', //垂直方向位置
+                x: 0, //距离x轴的距离
+                y: 100 //距离Y轴的距离
+            },
+            series: [{
+                name: 'Random data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * timeInterval,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+            }, {
+                name: 'Random data2',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * timeInterval,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+            }]
+        });
+        $(".box").on("click", function() {
+            timeInterval = $(this).data("time");
+               chart = new Highcharts.Chart(json);
+            chart.setCategories(timeInterval);
+
+        });
+        $("#btn").on("click", function() {
+            
+            var  chart = new Highcharts.Chart();
+
+            alert(chart.title.text)
+        });
+        /**/
+    });
+    </script>
+</head>
+
+<body>
+    <script src="http://cdn.hcharts.cn/highcharts/4.1.4/highcharts.js
+"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/4.1.4/modules/exporting.js"></script>
+    <div id="chart1" class="chart-box"></div>
+    <button id="btn">点击</button>
+    <!-- 通过点击事件动态的改变时间刻度-->
+    <button class="box" data-time="300000">5min</button>
+    <button class="box" data-time="900000">15min</button>
+    <button class="box" data-time="3600000">1hour</button>
+</body>
+
+</html>

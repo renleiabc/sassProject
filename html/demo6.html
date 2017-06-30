@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+	//var url=http://www.sohu.htm?i=1;
+	var url = "?i=1";
+	var obj  = {};
+	if(url.indexOf("?") != -1){
+         var str = url.substr(1);//去掉了？
+         console.log(str);
+          var strs = str.split("&");
+         console.log(strs);
+         for(var i = 0;i <strs.length;i++){
+         	 obj[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            console.log(unescape(strs[i].split("=")[1]));
+         }
+        console.log(obj["i"].split(","))
+	}
+/*var str1 = "hello world";
+var arr = str1.split("&");
+console.log(arr[0]+";"+arr.length);*/
+	</script>
+</body>
+</html>

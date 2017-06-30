@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<button type="" id = "btn">dianji </button>
+	<script type="text/javascript">
+	var data,variable;
+	variable = "enter";
+		 var data = {
+                       "header": {
+                           "type": "message",
+                           "sender": "browser",
+                           "receiver": "",
+                           "timestamp": "2010-10-10 14:59:20"
+                       },
+                       "body": {
+                           "browser": {
+                               "summary": {
+                                   "url": "requestLineStation"
+                               },
+                               "details": {
+                                   "passagerFlowType":variable
+                               }
+                           }
+                       }
+                   }
+                   $("#btn").on('click',function(event) {
+                   	event.preventDefault();
+                   	/* Act on the event */
+                   	variable = "out";
+                   data.body.browser.details.passagerFlowType = variable;
+                    console.log(variable);
+                    console.log(data);
+                     
+                   });
+	</script>
+</body>
+</html>

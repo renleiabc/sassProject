@@ -1,0 +1,209 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Highcharts Example</title>
+    <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <style type="text/css">
+    $ {
+        demo.css
+    }
+    </style>
+    <script type="text/javascript">
+   
+    $(function() {
+    	var json,txt;
+    	 Highcharts.setOptions({
+        global: {
+            timezoneOffset: -8 * 60
+        }
+    });
+    	 json = {
+            title: {
+                text:"图表",
+            },
+            chart: {
+                type: 'spline',
+                animation: true,
+                events: {
+                    load: function() {
+                        // set up the updating of the chart each second
+                        var series = this.series,
+                            chart = this;
+                        setInterval(function() {
+                            var x = new Date().getTime(), // current time
+                                y = Math.random(),
+                                y1 = Math.random();
+                            // addPoint 第二个参数表示是否对图表进行重绘，当有多个参数是，需先关闭重绘，
+                            // 等操作完毕后再调 chart.redraw();
+                            series[0].addPoint([x, y], false, true);
+                            series[1].addPoint([x, y1], false, true);
+                            chart.redraw();
+                        }, changedate());
+                    }
+                }
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150,
+                tickInterval:changedate(),//当前的时间刻度是一秒
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            plotOptions: {
+                series: {
+                    //showCheckbox: true
+                },
+                line: {
+                    events: {
+                        checkboxClick: function(event) {
+                            if (event.checked) {
+                                console.log(event);
+                                this.show();
+                            } else {
+                                console.log(event);
+                                this.hide();
+                            }
+                        },
+                        legendItemClick: function(event) { //return false 即可禁用LegendIteml，防止通过点击item显示隐藏系列
+                            return false;
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                align: 'right', //水平方向位置
+                verticalAlign: 'top', //垂直方向位置
+                x: 0, //距离x轴的距离
+                y: 100 //距离Y轴的距离
+            },
+            series: [{
+                name: 'Random data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+            }, {
+                name: 'Random data2',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+            }]
+        }
+       
+        $('#chart1').highcharts(json);
+        $(".box").on("click",function(){
+        	timeInterval = $(this).data("time");
+		//页面跳转
+            window.location.href="demo.html?datetime="+timeInterval+"";
+        });
+/*如: url=http://www.sohu.htm?i=1
+location.search的值就是"?i=1"
+substr(1) 就是从索引1开始截取
+所以以这个页面为例的话location.search.substr(1)的值就是"i=1";start:必需。要抽取的子串的起始下标。必须是数值。如果是负数，那么该参数声明从字符串的尾部开始算起的位置。也就是说，-1 指字符串中最后一个字符，-2 指倒数第二个字符，以此类推。lenght:可选。子串中的字符数。必须是数值。如果省略了该参数，那么返回从 stringObject 的开始位置到结尾的字串。*/
+	//stringObject.substr(start,length)；
+    /*javascript escape()函数和unescape()函数
+
+escape() 函数可对字符串进行编码，这样就可以在所有的计算机上读取该字符串。
+
+语法：
+escape(string)
+string     必需。要被转义或编码的字符串。
+
+返回值：返回一个包含了 charstring 内容的字符串值（Unicode 格式）。所有空格、标点、重音符号以及其他非 ASCII字符都用 %xx 编码代替，其中 xx 等于表示该字符的十六进制数。例如，空格返回的是”%20″ 。字符值大于255 的以%uxxxx 格式存储。
+
+说明：该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ – _ + . / 。其他所有的字符都会被转义序列替换。
+
+注释：ECMAScript v3 反对使用该方法，应用使用 decodeURI() 和 decodeURIComponent() 替代它。
+
+unescape 方法，解码用 escape 方法进行了编码的 String 对象。
+
+语法：
+unescape(charstring)
+必选项   charstring   参数是要解码的   String   对象。
+
+返回值：返回一个包含 charstring 内容的字符串值。所有以%xx十六进制形式编码的字符都用 ASCII 字符集中等价的字符代替。以 %uxxxx 格式（Unicode 字符）编码的字符用十六进制编码 xxxx 的 Unicode 字符代替。
+
+工作原理：通过找到形式为 %xx 和 %uxxxx 的字符序列（x 表示十六进制的数字），用 Unicode 字符 \u00xx 和 \uxxxx 替换这样的字符序列进行解码*/
+	//自定义方法  获取时间
+        function changedate(){
+		//静态页面参数接收    ,解析数据对象
+		var url = location.search;
+      /* search 属性是一个可读可写的字符串，可设置或返回当前 URL 的查询部分（问号 ? 之后的部分）。语法：location.search； 实例：返回URL的查询部分。假设当前的URL就是http://www.runoob.com/submit.htm?email=someone@ example.com：以上实例输出结果: ?email=someone@example.com
+*/
+             var Request = new Object();
+            if(url.indexOf("?") != -1) {
+                var str = url.substr(1)　 //去掉?号
+               // substr() 方法可在字符串中抽取从 start 下标开始的指定数目的字符。
+                var strs = str.split("&");//把当前的字符串转化为只有一个元素的数组
+                for(var i = 0; i < strs.length; i++) {
+			//遍历数组strs，然后以=对其进行分割，返回新数组元素，并把新数组的第一个元素作为对象Request的属性；遍历数组strs,以等号对其进行分割，返回返回一个新的数组，取出新数组的第二个元素赋值给对象Request；
+                    Request[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                    
+                }
+            }
+            var datetime=1000;
+            if(null != Request["datetime"]) {
+               //把Request的属性datetime的值用,逗号进行分割；赋值给datetime；
+             datetime= Request["datetime"].split(",");
+             console.log(typeof datetime);
+            }
+	//输出时间
+        return datetime;
+		
+          
+        }
+        /**/
+    });
+    </script>
+</head>
+
+<body>
+    <script src="http://cdn.hcharts.cn/highcharts/4.1.4/highcharts.js
+"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/4.1.4/modules/exporting.js"></script>
+    <div id="chart1" class="chart-box"></div>
+    <button id="btn">点击</button>
+    <!-- 通过点击事件动态的改变时间刻度-->
+    <button class="box" data-time= "3000">5min</button>
+    <button class="box" data-time= "9000">15min</button>
+	<input id="datatime" value="1000" >
+    <button class="box" data-time= "3600">1hour</button>
+</body>
+
+</html>

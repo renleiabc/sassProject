@@ -1,0 +1,28 @@
+　*{
+	margin-bottom: 0
+}
+@mixin center-block {
+    margin-left:auto;
+    margin-right:auto;
+}
+.demo{
+    @include center-block;
+}
+　/* @mixin left($value: 10px) {
+　　　float: left;
+　　　margin-right: $value;
+　}
+div {
+　　　@include left($value:20px);
+　} */
+@mixin horizontal-line($border:1px dashed #ccc, $padding:10px){
+    border-bottom:$border;
+    padding-top:$padding;
+    padding-bottom:$padding;  
+}
+.imgtext-h li{
+    @include horizontal-line(1px solid #ccc);
+}
+.imgtext-h--product li{
+    @include horizontal-line($padding:15px);
+}

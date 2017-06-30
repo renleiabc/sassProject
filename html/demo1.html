@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="btn">点击</button>
+    <script type="text/javascript" src="../js/jquery-1.12.3.js"></script>
+    <script type="text/javascript">
+    var json, oBtn;
+    oBtn = document.getElementById("btn");
+    json = {
+        "head": {
+            "name": "renlei",
+            "age": 16,
+            "job": "student"
+        },
+        "foot": {
+            "num": "123"
+        }
+    };
+    //json.load();
+    oBtn.onclick = function() {
+        json.head.name = "lili";
+        console.log(json);
+        json.load();
+    }
+    document.write(json)
+    var str = JSON.stringify(json)
+    console.log(str);
+    $.each(json, function(key, val) {
+        console.log(val[key])
+    })
+    var arr2 = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ];
+    $.each(arr2, function(i, item) {
+        console.log(item[0]);
+    })
+    var json1 = {
+    	"head":{"id":"1","tagName":"apple"},
+   "head1": {"id":"2","tagName":"orange"},
+    "head2":{"id":"3","tagName":"banana"},
+   "head3": {"id":"4","tagName":"watermelon"},
+   "head4": {"id":"5","tagName":"pineapple"}
+};
+var arr = [];
+var o ={};
+$.each(json1, function(idx, obj) {
+	o.id = obj.id;
+	o.tagName = obj.tagName;
+	console.log(o);
+	arr.push(o);
+	
+});
+var Array=[];
+function ObjStory(id,biaoti,author,type) //声明对象
+{
+    this.ID = id;
+    this.Biaoti= biaoti;
+    this.Author= author;
+    this.Type = type;
+     
+ 
+}
+Array.push(new ObjStory(12,'大家去看海','李大胆','文艺类'));
+Array.push(new ObjStory(14,'大家去看天','李小胆','文艺类'));
+JSON.stringify(Array)
+console.log(JSON.stringify(Array))
+
+    </script>
+</body>
+
+</html>

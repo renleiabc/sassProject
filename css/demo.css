@@ -1,0 +1,174 @@
+/*@*charset "UTF-8";*/
+/* sass的变量必须是$开头，后面紧跟变量名，而变量值和变量名之间就需要使用冒号(:)分隔开（就像CSS属性设置一样），如果值后面加上!default则表示默认值。
+1.普通变量
+定义之后可以在全局范围内使用。 */
+body {
+  font-size: 12px; }
+
+/* sass的默认变量仅需要在值后面加上!default即可。 */
+body {
+  line-height: 1.5; }
+
+/* sass的默认变量一般是用来设置默认值，然后根据需求来覆盖的，覆盖的方式也很简单，只需要在默认变量之前重新声明下变量即可 */
+body {
+  line-height: 2; }
+
+/* 可以看出现在编译后的line-height为2，而不是我们默认的1.5。默认变量的价值在进行组件化开发的时候会非常有用。 */
+/*2 特殊变量 */
+/*一般般我们定义的变量都为属性值，可直接使用，但是如果变量作为属性或在某些特殊情况下等则必须要以形式使用。*/
+.border-top {
+  border-top: 1px solid #ccc; }
+
+body {
+  font: 12px/2; }
+
+/*3多值变量  */
+/* 多值变量分为list类型和map类型，简单来说list类型有点像js中的数组，而map类型有点像js中的对象。
+list
+list数据可通过空格，逗号或小括号分隔多个值，可用nth($var,$index)取值。关于list数据操作还有很多其他函数如length($list)，join($list1,$list2,[$separator])，append($list,$value,[$separator])等，具体可参考sass Functions（搜索List Functions即可） */
+/* //一维数据
+$px: 5px 10px 20px 30px;
+
+//二维数据，相当于js中的二维数组
+$px: 5px 10px, 20px 30px;
+$px: (5px 10px) (20px 30px); */
+a {
+  color: #08c; }
+  a:hover {
+    color: #333; }
+
+/* map
+map数据以key和value成对出现，其中value又可以是list。格式为：$map: (key1: value1, key2: value2, key3: value3);。可通过map-get($map,$key)取值。关于map数据还有很多其他函数如map-merge($map1,$map2)，map-keys($map)，map-values($map)等， */
+/* 循环一个列表里面所有的值，然后去做点什么呗，那到底做点什么呢，这是个问题。你可以先想个三分钟试试，我们现在能用@each给css赋予什么魅力。 */
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.5em; }
+
+h3 {
+  font-size: 1.2em; }
+
+.puma-icon {
+  background-image: url("/images/puma.png"); }
+
+.sea-slug-icon {
+  background-image: url("/images/sea-slug.png"); }
+
+.egret-icon {
+  background-image: url("/images/egret.png"); }
+
+.salamander-icon {
+  background-image: url("/images/salamander.png"); }
+
+.puma-icon, .sea-slug-icon, .egret-icon, .salamander-icon {
+  background: url("/images/animal.png") no-repeat; }
+
+.puma-icon {
+  background-position: -30px; }
+
+.sea-slug-icon {
+  background-position: -60px; }
+
+.egret-icon {
+  background-position: -90px; }
+
+.salamander-icon {
+  background-position: -120px; }
+
+/* 嵌套(Nesting) */
+/* 选择器嵌套 */
+#top_nav {
+  line-height: 40px;
+  text-transform: capitalize;
+  background-color: #333; }
+  #top_nav li {
+    float: left; }
+  #top_nav a {
+    display: block;
+    padding: 0 10px;
+    color: #fff; }
+    #top_nav a:hover {
+      color: #ddd; }
+
+/* 属性嵌套 */
+.fakeshadow {
+  border-style: solid;
+  border-left-width: 4px;
+  border-left-color: #888;
+  border-right-width: 2px;
+  border-right-color: #ccc; }
+
+/* 当然这只是个属性嵌套的例子，如果实际这样使用，那估计得疯掉。 */
+/* @at-root
+sass3.3.0中新增的功能，用来跳出选择器嵌套的。默认所有的嵌套，继承所有上级选择器，但有了这个就可以跳出所有上级选择器。
+普通跳出嵌套
+ */
+.parent-1 {
+  color: #f00; }
+  .parent-1 .child {
+    width: 100px; }
+
+.parent-2 {
+  color: #f00; }
+  .child {
+    width: 200px; }
+
+.parent-3 {
+  background: #f00; }
+  .child1 {
+    width: 300px; }
+
+  .child2 {
+    width: 400px; }
+
+/* @at-root (without: ...)和@at-root (with: ...)
+默认@at-root只会跳出选择器嵌套，而不能跳出@media或@support，如果要跳出这两种，则需使用@at-root (without: media)，@at-root (without: support)。这个语法的关键词有四个：all（表示所有），rule（表示常规css），media（表示media），support（表示support，因为@support目前还无法广泛使用，所以在此不表）。我们默认的@at-root其实就是@at-root (without:rule)。 */
+@media print {
+  .parent1 {
+    color: #f00; }
+    .child1 {
+      width: 200px; } }
+@media print {
+  .parent2 {
+    color: #f00; } }
+  .parent2 .child2 {
+    width: 200px; }
+
+@media print {
+  .parent3 {
+    color: #f00; } }
+  .child3 {
+    width: 200px; }
+
+/* @at-root与&配合使用 */
+.parent .child {
+  color: #f00; }
+
+.parent .child {
+  color: #f00; }
+
+/* 应用于@keyframe */
+.demo {
+  animation: motion 3s infinite; }
+@keyframes motion {
+  transformZ: 360reg; }
+/* 函数 */
+/* sass定义了很多函数可供使用，当然你也可以自己定义函数，以@fuction开始。sass的官方函数链接为：sass fuction，实际项目中我们使用最多的应该是颜色函数，而颜色函数中又以lighten减淡和darken加深为最，其调用方法为lighten($color,$amount)和darken($color,$amount)，它们的第一个参数都是颜色值，第二个参数都是百分比。 */
+body {
+  font-size: 12px;
+  color: #e6e6e6; }
+
+.test {
+  font-size: 1.33333rem;
+  color: #b3b3b3; }
+
+.ib {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1; }
+
+p {
+  color: green; }
+
+/*# sourceMappingURL=demo.css.map */
